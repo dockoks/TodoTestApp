@@ -1,10 +1,3 @@
-//
-//  TodoTaskTestAppUITests.swift
-//  TodoTaskTestAppUITests
-//
-//  Created by Danila Kokin on 10/9/24.
-//
-
 import XCTest
 
 final class TodoTaskTestAppUITests: XCTestCase {
