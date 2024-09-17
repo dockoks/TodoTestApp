@@ -197,12 +197,12 @@
 		4E4F1C5A2C9087680047E135 /* TodoTaskTestApp */ = {
 			isa = PBXGroup;
 			children = (
-				4EE5FFD42C92567C00C78FCE /* Services */,
 				4EE5FFF22C93248C00C78FCE /* Application */,
 				4EE5FFE62C92611C00C78FCE /* CoreData */,
 				4EE5FFF12C93239900C78FCE /* Helper */,
 				4EE5FFF42C94566400C78FCE /* Modules */,
 				4EE5FFF32C93249800C78FCE /* Resources */,
+				4EE5FFD42C92567C00C78FCE /* Services */,
 			);
 			path = TodoTaskTestApp;
 			sourceTree = "<group>";
@@ -321,8 +321,6 @@
 				4EE500712C98813C00C78FCE /* UserDefaultsService.swift */,
 				4EE5FFD52C92568C00C78FCE /* CoreDataManager.swift */,
 				4EE500622C9750C500C78FCE /* TodoService.swift */,
-				4EE500752C989EA800C78FCE /* ColorPalette.swift */,
-				4EE500772C989EB700C78FCE /* TodoFont.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -358,6 +356,8 @@
 		4EE5FFF32C93249800C78FCE /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4EE500752C989EA800C78FCE /* ColorPalette.swift */,
+				4EE500772C989EB700C78FCE /* TodoFont.swift */,
 				4EE500792C989FCD00C78FCE /* Fonts */,
 				4E4F1C672C9087690047E135 /* Assets.xcassets */,
 				4E4F1C692C9087690047E135 /* LaunchScreen.storyboard */,
