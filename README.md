@@ -54,6 +54,9 @@ Choose the TodoApp scheme and select the desired test target.
 1. Run Tests
 Click on Product > Test or press Cmd + U to execute the unit tests.
 
+### Preview
+https://github.com/user-attachments/assets/3052d0cf-8db0-42ce-b49b-1e8968cb75b7
+
 ### Project Structure
 ```
 .
