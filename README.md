@@ -55,6 +55,7 @@ Choose the TodoApp scheme and select the desired test target.
 Click on Product > Test or press Cmd + U to execute the unit tests.
 
 ### Project Structure
+```
 .
   ├── App
   │   ├── Application                 # App & Scene Delegate
@@ -75,6 +76,7 @@ Click on Product > Test or press Cmd + U to execute the unit tests.
   │       ├── CoreDataManager         # Restores, saved, updates, deletes data from CoreData
   │       └── TodoService             # Manages complex scenarios of all services
   └── Tests                           # Unit tests
+```
 
 ### Dependencies
 - Core Data: Used for data persistence.
