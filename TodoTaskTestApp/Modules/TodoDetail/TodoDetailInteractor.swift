@@ -1,17 +1,14 @@
-//
-//  TodoModuleBuilder.swift
-//  TodoTaskTestApp
-//
-//  Created by Danila Kokin on 13/9/24.
-//
-
 import Foundation
+
+// MARK: - TodoDetailInteractorInput
 
 protocol TodoDetailInteractorInput: AnyObject {
     func fetchTodoDetails()
     func updateTodo(_ todo: Todo)
     func deleteTodo()
 }
+
+// MARK: - TodoDetailInteractorOutput
 
 protocol TodoDetailInteractorOutput: AnyObject {
     func didFetchTodoDetails(_ todo: Todo)
@@ -22,16 +19,22 @@ protocol TodoDetailInteractorOutput: AnyObject {
     func didFailToDeleteTodoWithError(_ error: Error)
 }
 
-class TodoDetailInteractor: TodoDetailInteractorInput {
+// MARK: TodoDetailInteractor
+
+final class TodoDetailInteractor {
     weak var output: TodoDetailInteractorOutput?
     private let todoService: TodoServiceProtocol
     private var todo: Todo
-
+    
     init(todoService: TodoServiceProtocol, todo: Todo) {
         self.todoService = todoService
         self.todo = todo
     }
+}
 
+// MARK: TodoDetailInteractorInput
+
+extension TodoDetailInteractor: TodoDetailInteractorInput {
     func fetchTodoDetails() {
         output?.didFetchTodoDetails(todo)
     }

@@ -1,11 +1,3 @@
-//
-//
-//  SceneDelegate.swift
-//  TodoTaskTestApp
-//
-//  Created by Danila Kokin on 10/9/24.
-//
-
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {

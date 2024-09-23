@@ -1,11 +1,3 @@
-//
-//  AppDelegate.swift
-//  TodoTaskTestApp
-//
-//  Created by Danila Kokin on 10/9/24.
-//
-
-// AppDelegate.swift
 import UIKit
 import CoreData
 
@@ -51,6 +43,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-
 }
 

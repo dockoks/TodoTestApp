@@ -1,17 +1,14 @@
-//
-//  TodoModuleBuilder.swift
-//  TodoTaskTestApp
-//
-//  Created by Danila Kokin on 13/9/24.
-//
-
 import UIKit
+
+// MARK: - TodoDetailRouterInput
 
 protocol TodoDetailRouterInput: AnyObject {
     func navigateBack()
 }
 
-class TodoDetailRouter: TodoDetailRouterInput {
+// MARK: - TodoDetailRouter
+
+final class TodoDetailRouter: TodoDetailRouterInput {
     weak var viewController: UIViewController?
 
     init(viewController: UIViewController?) {

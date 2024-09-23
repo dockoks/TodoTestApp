@@ -1,36 +1,59 @@
-//
-//  TodoModuleBuilder.swift
-//  TodoTaskTestApp
-//
-//  Created by Danila Kokin on 13/9/24.
-//
-
 import Foundation
 
-protocol TodoDetailPresenterInput: TodoDetailViewOutput, TodoDetailInteractorOutput {}
+// MARK: - TodoDetailModuleDelegate
 
+protocol TodoDetailModuleDelegate: AnyObject {
+    func didUpdateTodo()
+}
 
-class TodoDetailPresenter: TodoDetailPresenterInput {
+// MARK: - TodoDetailPresenter
+
+final class TodoDetailPresenter {
     weak var view: TodoDetailViewInput?
-    var interactor: TodoDetailInteractorInput?
-    var router: TodoDetailRouterInput?
+    weak var delegate: TodoDetailModuleDelegate?
+    let interactor: TodoDetailInteractorInput
+    let router: TodoDetailRouterInput
+    
+    private enum Constants {
+        static let emptyTaskNameError = "Task name cannot be empty."
+    }
+    
+    init(
+        view: TodoDetailViewInput? = nil,
+        interactor: TodoDetailInteractorInput,
+        router: TodoDetailRouterInput,
+        delegate: TodoDetailModuleDelegate? = nil
+    ) {
+        self.view = view
+        self.interactor = interactor
+        self.router = router
+        self.delegate = delegate
+    }
+}
 
-    // MARK: - View Output
+// MARK: - TodoDetailViewOutput
 
+extension TodoDetailPresenter: TodoDetailViewOutput {
     func viewDidLoad() {
-        interactor?.fetchTodoDetails()
+        interactor.fetchTodoDetails()
     }
-
+    
     func didTapSaveButton(todo: Todo) {
-        interactor?.updateTodo(todo)
+        guard !todo.name.isEmpty else {
+            view?.showError(Constants.emptyTaskNameError)
+            return
+        }
+        interactor.updateTodo(todo)
     }
-
+    
     func didTapDeleteButton() {
-        interactor?.deleteTodo()
+        interactor.deleteTodo()
     }
+}
 
-    // MARK: - Interactor Output
+// MARK: - TodoDetailInteractorOutput
 
+extension TodoDetailPresenter: TodoDetailInteractorOutput {
     func didFetchTodoDetails(_ todo: Todo) {
         view?.displayTodoDetails(todo)
     }
@@ -40,9 +63,9 @@ class TodoDetailPresenter: TodoDetailPresenterInput {
     }
 
     func didUpdateTodoSuccessfully() {
+        delegate?.didUpdateTodo()
         DispatchQueue.main.async {
-            self.view?.didUpdateTodo()
-            self.router?.navigateBack()
+            self.router.navigateBack()
         }
     }
 
@@ -51,11 +74,10 @@ class TodoDetailPresenter: TodoDetailPresenterInput {
     }
 
     func didDeleteTodoSuccessfully() {
-        router?.navigateBack()
+        router.navigateBack()
     }
 
     func didFailToDeleteTodoWithError(_ error: Error) {
         view?.showError(error.localizedDescription)
     }
 }
-

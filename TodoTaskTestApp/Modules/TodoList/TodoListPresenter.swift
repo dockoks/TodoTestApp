@@ -1,8 +1,8 @@
 import Foundation
 
-protocol TodoListPresenterInput: AnyObject {
+protocol TodoListViewOutpot: AnyObject {
     func viewDidLoad()
-    func didFilterTodos(index: Int)
+    func didFilterTodos(option: FilterOption)
     func didTapAddTodo()
     func didToggleCompletion(for todo: Todo)
     func didTapOpenTodo(_ todo: Todo)
@@ -12,24 +12,31 @@ protocol TodoListPresenterInput: AnyObject {
 
 final class TodoListPresenter {
     weak var view: TodoListViewInput?
-    var interactor: TodoListInteractorInput?
-    var router: TodoListRouterInput?
+    let interactor: TodoListInteractorInput
+    let router: TodoListRouterInput
     
     private var todos: [Todo] = []
     private var filteredTodos: [Todo] = []
-    private var index: Int = 0
+    private var option: FilterOption = .all
     
-    init() {}
+    init(
+        view: TodoListViewInput? = nil,
+        interactor: TodoListInteractorInput,
+        router: TodoListRouterInput
+    ) {
+        self.view = view
+        self.interactor = interactor
+        self.router = router
+    }
 }
 
-extension TodoListPresenter: TodoListPresenterInput {
-    func didFilterTodos(index: Int) {
-        self.index = index
-        switch self.index {
-        case 0: filteredTodos = todos
-        case 1: filteredTodos = todos.filter{ !$0.isCompleted }
-        case 2: filteredTodos = todos.filter{ $0.isCompleted }
-        default: break
+extension TodoListPresenter: TodoListViewOutpot {
+    func didFilterTodos(option: FilterOption) {
+        self.option = option
+        switch option {
+        case .all: filteredTodos = todos
+        case .open: filteredTodos = todos.filter{ !$0.isCompleted }
+        case .closed: filteredTodos = todos.filter{ $0.isCompleted }
         }
         view?.updateTodos(with: filteredTodos)
         view?.didUpdateSegmentedCounts(
@@ -40,39 +47,43 @@ extension TodoListPresenter: TodoListPresenterInput {
     }
     
     func viewDidLoad() {
-        interactor?.loadInitialDataIfNeeded()
+        interactor.loadInitialDataIfNeeded()
     }
     
     func didTapAddTodo() {
-        router?.navigateToAddTodo()
+        router.navigateToAddTodo()
     }
     
     func didSelectTodo(_ todo: Todo) {
-        router?.navigateToTodoDetail(with: todo)
+        router.navigateToTodoDetail(with: todo)
     }
     
     func didToggleCompletion(for todo: Todo) {
         var updatedTodo = todo
         updatedTodo.isCompleted.toggle()
-        interactor?.updateTodo(updatedTodo)
+        interactor.updateTodo(updatedTodo)
     }
     
     func didTapOpenTodo(_ todo: Todo) {
-        router?.navigateToTodoDetail(with: todo)
+        router.navigateToTodoDetail(with: todo)
     }
     
     func didUpdateTodo(_ todo: Todo) {
-        interactor?.updateTodo(todo)
+        interactor.updateTodo(todo)
     }
 
     func didDeleteTodo(_ todo: Todo) {
-        interactor?.deleteTodo(todo)
+        interactor.deleteTodo(todo)
     }
 }
 
 extension TodoListPresenter: TodoListInteractorOutput {
+    func didAddNewTodo() {
+        interactor.fetchTodos()
+    }
+    
     func didLoadInitialData() {
-        interactor?.fetchTodos()
+        interactor.fetchTodos()
     }
     
     func didFailToLoadInitialData(_ error: any Error) {
@@ -81,8 +92,7 @@ extension TodoListPresenter: TodoListInteractorOutput {
     
     func didFetchTodos(_ todos: [Todo]) {
         self.todos = todos
-        didFilterTodos(index: index)
-        
+        didFilterTodos(option: option)
     }
     
     func didFailToFetchTodos(_ error: Error) {
@@ -90,7 +100,7 @@ extension TodoListPresenter: TodoListInteractorOutput {
     }
     
     func didAddTodo() {
-        interactor?.fetchTodos()
+        interactor.fetchTodos()
     }
     
     func didFailToAddTodo(_ error: Error) {
@@ -98,7 +108,7 @@ extension TodoListPresenter: TodoListInteractorOutput {
     }
     
     func didUpdateTodo() {
-        interactor?.fetchTodos()
+        interactor.fetchTodos()
     }
     
     func didFailToUpdateTodo(_ error: Error) {
@@ -106,10 +116,14 @@ extension TodoListPresenter: TodoListInteractorOutput {
     }
     
     func didDeleteTodo() {
-        interactor?.fetchTodos()
+        interactor.fetchTodos()
     }
     
     func didFailToDeleteTodo(_ error: Error) {
         view?.update(with: error.localizedDescription)
     }
 }
+
+extension TodoListPresenter: AddTodoModuleDelegate { }
+
+extension TodoListPresenter: TodoDetailModuleDelegate { }
