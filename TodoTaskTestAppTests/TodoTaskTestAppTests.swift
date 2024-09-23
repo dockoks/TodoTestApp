@@ -1,11 +1,3 @@
-//
-//  TodoTaskTestAppTests.swift
-//  TodoTaskTestAppTests
-//
-//  Created by Danila Kokin on 10/9/24.
-//
-
-
 import XCTest
 @testable import TodoTaskTestApp
 
