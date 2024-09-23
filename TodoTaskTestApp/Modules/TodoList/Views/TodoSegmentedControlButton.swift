@@ -11,10 +11,10 @@ final class SegmentedControlButton: UIView {
         }
     }
 
-    init(title: String, count: Int) {
+    init(style: FilterOption, count: Int = 0) {
         super.init(frame: .zero)
         setupView()
-        configure(title: title, count: count)
+        configure(style: style, count: count)
         updateAppearance()
     }
 
@@ -65,9 +65,10 @@ final class SegmentedControlButton: UIView {
         ])
     }
 
-    private func configure(title: String, count: Int) {
-        titleLabel.text = title
+    private func configure(style: FilterOption, count: Int) {
+        titleLabel.text = style.rawValue
         countLabel.text = "\(count)"
+        tag = style.tag
     }
 
     private func updateAppearance() {

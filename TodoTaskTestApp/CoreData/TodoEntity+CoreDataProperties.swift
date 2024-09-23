@@ -1,11 +1,3 @@
-//
-//  TodoEntity+CoreDataProperties.swift
-//  TodoTaskTestApp
-//
-//  Created by Danila Kokin on 12/9/24.
-//
-//
-
 import Foundation
 import CoreData
 
@@ -25,5 +17,7 @@ extension TodoEntity {
 }
 
 extension TodoEntity : Identifiable {
-
+    public var id: String {
+        return todoId
+    }
 }

@@ -1,22 +1,19 @@
 import UIKit
 
 protocol SegmentedControlDelegate: AnyObject {
-    func segmentedControl(_ segmentedControl: SegmentedControl, didSelect index: Int)
+    func segmentedControl(_ segmentedControl: SegmentedControl, didSelect option: FilterOption)
 }
 
-import UIKit
-
 final class SegmentedControl: UIView {
-    
     weak var delegate: SegmentedControlDelegate?
     
     private let separatorView = UIView()
-    private let allButton = SegmentedControlButton(title: "All", count: 0)
-    private let openButton = SegmentedControlButton(title: "Open", count: 0)
-    private let closedButton = SegmentedControlButton(title: "Closed", count: 0)
+    private let allButton = SegmentedControlButton(style: .all)
+    private let openButton = SegmentedControlButton(style: .open)
+    private let closedButton = SegmentedControlButton(style: .closed)
     
     private var buttons: [SegmentedControlButton] = []
-    private var selectedIndex: Int = 0
+    private(set) var selectedOption: FilterOption = .all
     
     init(allCount: Int = 0, openCount: Int = 0, closedCount: Int = 0) {
         super.init(frame: .zero)
@@ -27,10 +24,9 @@ final class SegmentedControl: UIView {
         
         buttons = [allButton, openButton, closedButton]
         
-        for (index, button) in buttons.enumerated() {
+        buttons.forEach {
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(buttonTapped))
-            button.addGestureRecognizer(tapGesture)
-            button.tag = index
+            $0.addGestureRecognizer(tapGesture)
         }
         
         setupView()
@@ -73,16 +69,18 @@ final class SegmentedControl: UIView {
     private func updateSelectedOption(animated: Bool) {
         UIView.animate(withDuration: animated ? 0.3 : 0) { [weak self] in
             self?.buttons.forEach {
-                $0.isSelected = $0.tag == self?.selectedIndex
+                $0.isSelected = $0.tag == self?.selectedOption.tag
             }
         }
     }
     
     @objc private func buttonTapped(_ sender: UITapGestureRecognizer) {
-        guard let button = sender.view as? SegmentedControlButton else { return }
-        selectedIndex = button.tag
+        guard let button = sender.view as? SegmentedControlButton,
+              let option = FilterOption(tag: button.tag)
+        else { return }
+        selectedOption = option
         updateSelectedOption(animated: true)
-        delegate?.segmentedControl(self, didSelect: selectedIndex)
+        delegate?.segmentedControl(self, didSelect: selectedOption)
     }
     
     func updateCounts(all: Int, open: Int, closed: Int) {
@@ -91,12 +89,8 @@ final class SegmentedControl: UIView {
         closedButton.updateCount(closed)
     }
     
-    func selectSegment(index: Int) {
-        selectedIndex = index
+    func selectSegment(option: FilterOption) {
+        selectedOption = option
         updateSelectedOption(animated: true)
-    }
-    
-    func getSelectedIndex() -> Int {
-        return selectedIndex
     }
 }

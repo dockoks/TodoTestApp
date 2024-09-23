@@ -1,14 +1,27 @@
 import UIKit
 
+// MARK: - Presenter Protocol
+
 protocol TodoListViewInput: AnyObject {
-    var presenter: TodoListPresenterInput? { get set }
     func didUpdateSegmentedCounts(all: Int, open: Int, closed: Int)
     func updateTodos(with todos: [Todo])
     func update(with error: String)
 }
 
+// MARK: - ViewController
+
 final class TodoListViewController: UIViewController, SegmentedControlDelegate {
-    var presenter: TodoListPresenterInput?
+    var presenter: TodoListViewOutpot?
+    
+    private enum Constants {
+        static let topInset: CGFloat = 16
+        static let edgeInsets: CGFloat = 16
+        static let headerHeight: CGFloat = 60
+        static let headerSpacing: CGFloat = 8
+        static let verticalInsets: CGFloat = 20
+        static let headerButtonSpacing: CGFloat = 8
+        static let addTodoButtonHeight: CGFloat = 44
+    }
     
     private let headerLabel = UILabel()
     private let dateLabel = UILabel()
@@ -27,7 +40,7 @@ final class TodoListViewController: UIViewController, SegmentedControlDelegate {
         return tv
     }()
     
-    var todos: [Todo] = [] {
+    private var todos: [Todo] = [] {
         didSet {
             self.tableView.reloadData()
         }
@@ -50,7 +63,6 @@ final class TodoListViewController: UIViewController, SegmentedControlDelegate {
         headerLabel.font = TodoFont.Styles.header
         headerLabel.textColor = ColorPalette.Text.primary
         
-        dateLabel.text = "Wed 23, 2023"
         dateLabel.font = TodoFont.Styles.subtitle
         dateLabel.textColor = ColorPalette.Text.tertiary
         
@@ -60,7 +72,7 @@ final class TodoListViewController: UIViewController, SegmentedControlDelegate {
         headerSV.addArrangedSubview(headerLabel)
         headerSV.addArrangedSubview(dateLabel)
         headerSV.axis = .vertical
-        headerSV.spacing = 4
+        headerSV.spacing = Constants.headerSpacing
         headerSV.alignment = .leading
         headerSV.distribution = .fillEqually
         
@@ -69,19 +81,18 @@ final class TodoListViewController: UIViewController, SegmentedControlDelegate {
         view.addSubview(headerSV)
         view.addSubview(newTodoButton)
         
-        newTodoButton.configure(title: "New task", icon: UIImage(systemName: "plus"))
         newTodoButton.addTarget(self, action: #selector(newTodoButtonDidTap), for: .touchUpInside)
         newTodoButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            headerSV.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
-            headerSV.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            headerSV.trailingAnchor.constraint(lessThanOrEqualTo: newTodoButton.leadingAnchor, constant: -8),
-            headerSV.heightAnchor.constraint(equalToConstant: 60),
+            headerSV.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Constants.topInset),
+            headerSV.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.edgeInsets),
+            headerSV.trailingAnchor.constraint(lessThanOrEqualTo: newTodoButton.leadingAnchor, constant: -Constants.headerButtonSpacing),
+            headerSV.heightAnchor.constraint(equalToConstant: Constants.headerHeight),
             
-            newTodoButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            newTodoButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.edgeInsets),
             newTodoButton.centerYAnchor.constraint(equalTo: headerSV.centerYAnchor),
-            newTodoButton.heightAnchor.constraint(equalToConstant: 44)
+            newTodoButton.heightAnchor.constraint(equalToConstant: Constants.addTodoButtonHeight)
         ])
     }
     
@@ -92,9 +103,9 @@ final class TodoListViewController: UIViewController, SegmentedControlDelegate {
         view.addSubview(segmentedControl)
         
         NSLayoutConstraint.activate([
-            segmentedControl.topAnchor.constraint(equalTo: headerSV.bottomAnchor, constant: 20),
-            segmentedControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            segmentedControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+            segmentedControl.topAnchor.constraint(equalTo: headerSV.bottomAnchor, constant: Constants.verticalInsets),
+            segmentedControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.edgeInsets),
+            segmentedControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Constants.edgeInsets)
         ])
     }
     
@@ -104,15 +115,15 @@ final class TodoListViewController: UIViewController, SegmentedControlDelegate {
         view.addSubview(tableView)
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: 20),
+            tableView.topAnchor.constraint(equalTo: segmentedControl.bottomAnchor, constant: Constants.verticalInsets),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
-    func segmentedControl(_ segmentedControl: SegmentedControl, didSelect index: Int) {
-        presenter?.didFilterTodos(index: index)
+    func segmentedControl(_ segmentedControl: SegmentedControl, didSelect option: FilterOption) {
+        presenter?.didFilterTodos(option: option)
     }
     
     private func updateDateLabel() {
@@ -127,13 +138,14 @@ final class TodoListViewController: UIViewController, SegmentedControlDelegate {
     }
 }
 
+// MARK: - TableView Delegate & Datasource
+
 extension TodoListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return switch segmentedControl.getSelectedIndex() {
-        case 0: todos.count
-        case 1: todos.filter { !$0.isCompleted }.count
-        case 2: todos.filter { $0.isCompleted }.count
-        default: 0
+        return switch segmentedControl.selectedOption {
+        case .all: todos.count
+        case .open: todos.filter { !$0.isCompleted }.count
+        case .closed: todos.filter { $0.isCompleted }.count
         }
     }
     
@@ -146,22 +158,16 @@ extension TodoListViewController: UITableViewDelegate, UITableViewDataSource {
         cell.configure(with: todo)
         
         cell.onToggleCompletion = { [weak self] toggledTodo in
-            guard let self = self else { return }
-            if let index = self.todos.firstIndex(where: { $0.id == toggledTodo.id }) {
-                self.presenter?.didToggleCompletion(for: self.todos[index])
-            }
+            guard let self, let index = self.todos.firstIndex(where: { $0.id == toggledTodo.id })
+            else { return }
+            self.presenter?.didToggleCompletion(for: self.todos[index])
         }
         return cell
-    }
-    
-    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        true
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let todo = todos[indexPath.row]
         presenter?.didTapOpenTodo(todo)
-        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -170,8 +176,9 @@ extension TodoListViewController: UITableViewDelegate, UITableViewDataSource {
             presenter?.didDeleteTodo(todo)
         }
     }
-
 }
+
+// MARK: - Presenter Protocol conformance
 
 extension TodoListViewController: TodoListViewInput {
     func didUpdateSegmentedCounts(all: Int, open: Int, closed: Int) {
@@ -187,7 +194,6 @@ extension TodoListViewController: TodoListViewInput {
     func updateTodos(with todos: [Todo]) {
         DispatchQueue.main.async {
             self.todos = todos
-            
             self.segmentedControl.updateCounts(
                 all: todos.count,
                 open: todos.filter { !$0.isCompleted }.count,
@@ -199,17 +205,5 @@ extension TodoListViewController: TodoListViewInput {
     
     func update(with error: String) {
         // Handle error
-    }
-}
-
-extension TodoListViewController: TodoDetailViewControllerDelegate {
-    func todoDetailViewControllerDidUpdateTodo() {
-        presenter?.viewDidLoad()
-    }
-}
-
-extension TodoListViewController: AddTodoModuleDelegate {
-    func didAddNewTodo() {
-        presenter?.viewDidLoad()
     }
 }

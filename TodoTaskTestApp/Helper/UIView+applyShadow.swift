@@ -1,10 +1,3 @@
-//
-//  UIView+applyShadow.swift
-//  TodoTaskTestApp
-//
-//  Created by Danila Kokin on 12/9/24.
-//
-
 import UIKit
 
 extension UIView {

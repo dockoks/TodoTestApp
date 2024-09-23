@@ -7,12 +7,26 @@ final class TodoTableViewCell: UITableViewCell {
     private let textStackView = UIStackView()
     private let nameLabel = UILabel()
     private let descriptionLabel = UILabel()
-    private let radioButton = UIButton()
+    private let radioButton = TodoRadioButton()
     private let separatorView = UIView()
     private let dateLabel = UILabel()
     
     var onToggleCompletion: ((Todo) -> Void)?
     private var todo: Todo?
+    
+    // MARK: - Constants
+    private enum Constants {
+        static let containerVerticalPadding: CGFloat = 8
+        static let containerHorizontalPadding: CGFloat = 16
+        static let containerCornerRadius: CGFloat = 12
+        static let textStackHeight: CGFloat = 44
+        static let contentPadding: CGFloat = 16
+        static let radioButtonPadding: CGFloat = -8
+        static let radioButtonSize: CGFloat = 44
+        static let separatorTopPadding: CGFloat = 12
+        static let separatorHeight: CGFloat = 1
+        static let dateLabelTopPadding: CGFloat = 12
+    }
     
     // MARK: - Initialization
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -61,43 +75,36 @@ final class TodoTableViewCell: UITableViewCell {
         dateLabel.font = TodoFont.Styles.caption
         dateLabel.textColor = ColorPalette.Text.secondary
         
-        radioButton.setImage(UIImage(systemName: "circle"), for: .normal)
-        radioButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .selected)
-        radioButton.contentVerticalAlignment = .fill
-        radioButton.contentHorizontalAlignment = .fill
-        radioButton.imageView?.contentMode = .scaleAspectFit
-        radioButton.imageEdgeInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-        
-        radioButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
         separatorView.backgroundColor = ColorPalette.Outline.light
         
         NSLayoutConstraint.activate([
-            containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.containerVerticalPadding),
+            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.containerHorizontalPadding),
+            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.containerHorizontalPadding),
+            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.containerVerticalPadding),
             
-            textStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: 44),
-            textStackView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
-            textStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            textStackView.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.textStackHeight),
+            textStackView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: Constants.contentPadding),
+            textStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Constants.contentPadding),
             textStackView.trailingAnchor.constraint(equalTo: radioButton.leadingAnchor, constant: -12),
             
-            radioButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -8),
-            radioButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
-            radioButton.widthAnchor.constraint(equalToConstant: 44),
-            radioButton.heightAnchor.constraint(equalToConstant: 44),
+            radioButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: Constants.radioButtonPadding),
+            radioButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: Constants.contentPadding),
+            radioButton.widthAnchor.constraint(equalToConstant: Constants.radioButtonSize),
+            radioButton.heightAnchor.constraint(equalToConstant: Constants.radioButtonSize),
             
-            separatorView.topAnchor.constraint(equalTo: textStackView.bottomAnchor, constant: 12),
-            separatorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
-            separatorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
-            separatorView.heightAnchor.constraint(equalToConstant: 1),
+            separatorView.topAnchor.constraint(equalTo: textStackView.bottomAnchor, constant: Constants.separatorTopPadding),
+            separatorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: Constants.contentPadding),
+            separatorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.contentPadding),
+            separatorView.heightAnchor.constraint(equalToConstant: Constants.separatorHeight),
             
-            dateLabel.topAnchor.constraint(equalTo: separatorView.bottomAnchor, constant: 12),
+            dateLabel.topAnchor.constraint(equalTo: separatorView.bottomAnchor, constant: Constants.dateLabelTopPadding),
             dateLabel.leadingAnchor.constraint(equalTo: textStackView.leadingAnchor),
-            dateLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
-            dateLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -16)
+            dateLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Constants.contentPadding),
+            dateLabel.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -Constants.contentPadding)
         ])
         
+        radioButton.addTarget(self, action: #selector(radioButtonTapped), for: .touchUpInside)
     }
     
     override func prepareForReuse() {
@@ -114,7 +121,7 @@ final class TodoTableViewCell: UITableViewCell {
     private func setupCellAppearance() {
         self.backgroundColor = .clear
         containerView.backgroundColor = ColorPalette.Background.layerTwo
-        containerView.layer.cornerRadius = 12
+        containerView.layer.cornerRadius = Constants.containerCornerRadius
         containerView.layer.cornerCurve = .continuous
         containerView.layer.masksToBounds = true
         containerView.applyShadow(color: .black)
@@ -125,62 +132,26 @@ final class TodoTableViewCell: UITableViewCell {
         self.todo = todo
         nameLabel.text = todo.name
         if let description = todo.description, !description.isEmpty {
-            descriptionLabel.text = todo.description
+            descriptionLabel.text = description
             descriptionLabel.isHidden = false
         } else {
             descriptionLabel.isHidden = true
         }
         dateLabel.text = formatDate(todo.dateCreated)
-        
-        updateAppearance(for: todo.isCompleted)
-    }
-    
-    // MARK: - Update Appearance Based on Completion
-    private func updateAppearance(for isCompleted: Bool) {
-        UIView.performWithoutAnimation {
-            if isCompleted {
-                applyStrikethrough(to: nameLabel)
-                radioButton.isSelected = true
-                radioButton.tintColor = ColorPalette.Main.primaryBlue
-            } else {
-                removeStrikethrough(from: nameLabel)
-                radioButton.isSelected = false
-                radioButton.tintColor = ColorPalette.Text.tertiary
-            }
-        }
+        radioButton.configure(isCompleted: todo.isCompleted)
     }
     
     // MARK: - Radio Button Tap
     @objc private func radioButtonTapped() {
         guard var todo = self.todo else { return }
-
         todo.isCompleted.toggle()
         self.todo = todo
         
-        updateAppearance(for: todo.isCompleted)
+        radioButton.configure(isCompleted: todo.isCompleted)
         onToggleCompletion?(todo)
     }
     
     // MARK: - Helper Methods
-    private func applyStrikethrough(to label: UILabel) {
-        guard let text = label.text else { return }
-        let attributedString = NSAttributedString(string: text, attributes: [
-            .font: label.font as Any,
-            .foregroundColor: label.textColor as Any,
-            .strikethroughStyle: NSUnderlineStyle.single.rawValue
-        ])
-        label.attributedText = attributedString
-    }
-    
-    private func removeStrikethrough(from label: UILabel) {
-        guard let text = label.text else { return }
-        let attributedString = NSAttributedString(string: text, attributes: [
-            .font: label.font as Any,
-            .foregroundColor: label.textColor as Any
-        ])
-        label.attributedText = attributedString
-    }
-    
     private func formatDate(_ date: Date) -> String? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium

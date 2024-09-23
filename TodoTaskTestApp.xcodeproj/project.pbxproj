@@ -15,6 +15,9 @@
 		4E4F1C762C90876A0047E135 /* TodoTaskTestAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4F1C752C90876A0047E135 /* TodoTaskTestAppTests.swift */; };
 		4E4F1C802C90876A0047E135 /* TodoTaskTestAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4F1C7F2C90876A0047E135 /* TodoTaskTestAppUITests.swift */; };
 		4E4F1C822C90876A0047E135 /* TodoTaskTestAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4F1C812C90876A0047E135 /* TodoTaskTestAppUITestsLaunchTests.swift */; };
+		4E5769572CA0A4A200CDCAEB /* FilterOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E5769562CA0A4A000CDCAEB /* FilterOption.swift */; };
+		4E5769582CA0A4A200CDCAEB /* FilterOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E5769562CA0A4A000CDCAEB /* FilterOption.swift */; };
+		4E57695A2CA0B3E900CDCAEB /* TodoRadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E5769592CA0B3E900CDCAEB /* TodoRadioButton.swift */; };
 		4EE500002C9472F000C78FCE /* TodoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EE5FFFB2C946C1600C78FCE /* TodoDetailViewController.swift */; };
 		4EE500012C9472F300C78FCE /* TodoDetailInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EE5FFFC2C946C1900C78FCE /* TodoDetailInteractor.swift */; };
 		4EE500032C9472F800C78FCE /* TodoDetailRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EE5FFFF2C946C1E00C78FCE /* TodoDetailRouter.swift */; };
@@ -106,6 +109,8 @@
 		4E4F1C7B2C90876A0047E135 /* TodoTaskTestAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TodoTaskTestAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E4F1C7F2C90876A0047E135 /* TodoTaskTestAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoTaskTestAppUITests.swift; sourceTree = "<group>"; };
 		4E4F1C812C90876A0047E135 /* TodoTaskTestAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoTaskTestAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		4E5769562CA0A4A000CDCAEB /* FilterOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterOption.swift; sourceTree = "<group>"; };
+		4E5769592CA0B3E900CDCAEB /* TodoRadioButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoRadioButton.swift; sourceTree = "<group>"; };
 		4EE500622C9750C500C78FCE /* TodoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoService.swift; sourceTree = "<group>"; };
 		4EE500642C9876E700C78FCE /* TodoIconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoIconButton.swift; sourceTree = "<group>"; };
 		4EE500662C987ABD00C78FCE /* AddTodoModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTodoModuleBuilder.swift; sourceTree = "<group>"; };
@@ -200,6 +205,8 @@
 				4EE5FFF22C93248C00C78FCE /* Application */,
 				4EE5FFE62C92611C00C78FCE /* CoreData */,
 				4EE5FFF12C93239900C78FCE /* Helper */,
+				4EE5FFB52C9233E100C78FCE /* Entities */,
+				4EE500742C98839000C78FCE /* Views */,
 				4EE5FFF42C94566400C78FCE /* Modules */,
 				4EE5FFF32C93249800C78FCE /* Resources */,
 				4EE5FFD42C92567C00C78FCE /* Services */,
@@ -236,23 +243,14 @@
 			path = AddTodo;
 			sourceTree = "<group>";
 		};
-		4EE500732C98836C00C78FCE /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				4EE500742C98839000C78FCE /* View */,
-				4EE5FFB52C9233E100C78FCE /* Entity */,
-			);
-			path = Shared;
-			sourceTree = "<group>";
-		};
-		4EE500742C98839000C78FCE /* View */ = {
+		4EE500742C98839000C78FCE /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				4EE500642C9876E700C78FCE /* TodoIconButton.swift */,
 				4EE5008A2C98B8C500C78FCE /* TodoTextField.swift */,
 				4EE5008C2C995F8500C78FCE /* TodoTextView.swift */,
 			);
-			path = View;
+			path = Views;
 			sourceTree = "<group>";
 		};
 		4EE500792C989FCD00C78FCE /* Fonts */ = {
@@ -272,6 +270,8 @@
 		4EE5FFB22C9233A800C78FCE /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				4E5769562CA0A4A000CDCAEB /* FilterOption.swift */,
+				4E5769592CA0B3E900CDCAEB /* TodoRadioButton.swift */,
 				4EE5FFE72C92BABA00C78FCE /* TodoSegmentedControl.swift */,
 				4EE5FFED2C92F4E700C78FCE /* TodoSegmentedControlButton.swift */,
 				4EE5FFE92C92D4F900C78FCE /* TodoTableViewCell.swift */,
@@ -280,13 +280,13 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		4EE5FFB52C9233E100C78FCE /* Entity */ = {
+		4EE5FFB52C9233E100C78FCE /* Entities */ = {
 			isa = PBXGroup;
 			children = (
-				4EE5FFC22C92354000C78FCE /* TodoListDTO.swift */,
 				4EE5FFD02C924EAC00C78FCE /* TodoList.swift */,
+				4EE5FFC22C92354000C78FCE /* TodoListDTO.swift */,
 			);
-			path = Entity;
+			path = Entities;
 			sourceTree = "<group>";
 		};
 		4EE5FFB72C92340000C78FCE /* TodoList */ = {
@@ -369,7 +369,6 @@
 		4EE5FFF42C94566400C78FCE /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				4EE500732C98836C00C78FCE /* Shared */,
 				4EE5FFB82C92344400C78FCE /* TodoDetail */,
 				4EE5FFB72C92340000C78FCE /* TodoList */,
 				4EE500682C987AC100C78FCE /* AddTodo */,
@@ -520,9 +519,11 @@
 				4EE5FFF72C945B9900C78FCE /* TodoListModuleBuilder.swift in Sources */,
 				4EE5FFD12C924EAC00C78FCE /* TodoList.swift in Sources */,
 				4EE5FFE42C92610B00C78FCE /* TodoEntity+CoreDataClass.swift in Sources */,
+				4E5769582CA0A4A200CDCAEB /* FilterOption.swift in Sources */,
 				4EE5FFE52C92610B00C78FCE /* TodoEntity+CoreDataProperties.swift in Sources */,
 				4EE500892C98AA4700C78FCE /* UIColor+hex.swift in Sources */,
 				4E4F1C5C2C9087680047E135 /* AppDelegate.swift in Sources */,
+				4E57695A2CA0B3E900CDCAEB /* TodoRadioButton.swift in Sources */,
 				4EE500042C94735B00C78FCE /* TodoDetailPresenter.swift in Sources */,
 				4EE5006A2C987AD800C78FCE /* AddTodoViewController.swift in Sources */,
 				4EE5FFEA2C92D4F900C78FCE /* TodoTableViewCell.swift in Sources */,
@@ -570,6 +571,7 @@
 				4EE500962C996A6D00C78FCE /* TodoListRouter.swift in Sources */,
 				4EE500972C996A6D00C78FCE /* TodoListInteractor.swift in Sources */,
 				4EE500982C996A6D00C78FCE /* TodoListModuleBuilder.swift in Sources */,
+				4E5769572CA0A4A200CDCAEB /* FilterOption.swift in Sources */,
 				4EE500992C996A6D00C78FCE /* TodoListViewController.swift in Sources */,
 				4EE500912C996A6900C78FCE /* TodoDetailInteractor.swift in Sources */,
 				4EE500922C996A6900C78FCE /* TodoDetailRouter.swift in Sources */,
